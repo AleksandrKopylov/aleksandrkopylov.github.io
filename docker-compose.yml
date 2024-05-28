@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  punk-php:
+    container_name: punk-php
+    build:
+      context: docker/images/php
+      dockerfile: ./prod.Dockerfile
+    networks:
+      - punk-app
+    volumes:
+      - ./src/mailer:/app
+  punk-web:
+    container_name: punk-web
+    image: nginx:alpine
+    networks:
+      - punk-app
+      - nginx
+    volumes:
+      - ./src/mailer:/app
+      - ./docker/configuration/nginx/app.conf:/etc/nginx/conf.d/default.conf
+#Docker Networks
+networks:
+  punk-app:
+    driver: bridge
+
+  nginx:
+    external: true
+    name: nginx
+
